@@ -104,7 +104,7 @@ window.removeImage = removeImage;
 
 
 
-import { auth, onAuthStateChanged, db, collection, addDoc, doc, setDoc, Timestamp, updateDoc } from "./firebase.js"
+import { auth, onAuthStateChanged, db, collection, addDoc, doc, setDoc, Timestamp, updateDoc, onSnapshot, query, where, orderBy } from "./firebase.js"
 import { showLoader, hideLoader } from "./helpers.js";
 
 
@@ -206,11 +206,89 @@ postBtn.addEventListener('click', () => {
   postContent.value = "";
 })
 
+let allPosts = document.getElementById("allPosts");
+
+
+let getPosts = async () => {
+
+  let collectionRef = collection(db, "posts");
+  let dbRef = query(collectionRef, orderBy("timestamp", "asc"))
+  await onSnapshot(dbRef, (snapshot) => {
+    snapshot.forEach((docs) => {
+      let data = docs.data();
+
+
+      let createdAt = data.timestamp;
+      let date = createdAt.toDate().toLocaleString();
+
+      allPosts.innerHTML += `<div class="bg-white rounded-lg shadow">
+    <!-- Post Header -->
+    <div class="p-4">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+          <img src="${data.userPic}" alt="Profile"
+            class="w-10 h-10 rounded-full object-cover">
+            <div>
+              <h3 class="font-semibold">${data.userName}</h3>
+              <p class="text-gray-500 text-sm">${date}<i class="fas fa-user-friends ml-1"></i></p>
+            </div>
+        </div>
+        <button class="text-gray-500 hover:bg-gray-100 p-2 rounded-full">
+          <i class="fas fa-ellipsis-h"></i>
+        </button>
+      </div>
+
+      <!-- Post Content -->
+      <div class="mt-3">
+        <p>${data.content}</p>
+      </div>
+    </div>
+
+    <!-- Post Image -->
+    <div class="border-t border-gray-200">
+      <img src="${data.image}"
+        alt="Post" class="w-full object-cover">
+    </div>
+
+    <!-- Post Stats -->
+    <div class="px-4 py-2 border-t border-gray-200 flex items-center justify-between text-gray-500 text-sm">
+      <div class="flex items-center space-x-1">
+        <i class="fas fa-thumbs-up text-blue-500"></i>
+        <span>42</span>
+      </div>
+      <div>
+        <span>8 comments · 3 shares</span>
+      </div>
+    </div>
+
+    <!-- Post Actions -->
+    <div class="px-4 py-2 border-t border-gray-200 grid grid-cols-3">
+      <button
+        class="flex items-center justify-center space-x-2 text-gray-500 hover:bg-gray-100 rounded-lg py-2">
+        <i class="fas fa-thumbs-up"></i>
+        <span>Like</span>
+      </button>
+      <button onclick="openCommentsModal()"
+        class="flex items-center justify-center space-x-2 text-gray-500 hover:bg-gray-100 rounded-lg py-2">
+        <i class="fas fa-comment"></i>
+        <span>Comment</span>
+      </button>
+      <button
+        class="flex items-center justify-center space-x-2 text-gray-500 hover:bg-gray-100 rounded-lg py-2">
+        <i class="fas fa-share"></i>
+        <span>Share</span>
+      </button>
+    </div>
+  </div>`
 
 
 
+    })
+  })
 
+}
 
+getPosts()
 
 
 
@@ -234,62 +312,3 @@ postBtn.addEventListener('click', () => {
 // Sample Post:
 
 // < !--Another Post-- >
-//   <div class="bg-white rounded-lg shadow">
-//     <!-- Post Header -->
-//     <div class="p-4">
-//       <div class="flex items-center justify-between">
-//         <div class="flex items-center space-x-3">
-//           <img src="https://randomuser.me/api/portraits/men/22.jpg" alt="Profile"
-//             class="w-10 h-10 rounded-full object-cover">
-//             <div>
-//               <h3 class="font-semibold">Michael Chen</h3>
-//               <p class="text-gray-500 text-sm">5 hrs ago · <i class="fas fa-user-friends"></i></p>
-//             </div>
-//         </div>
-//         <button class="text-gray-500 hover:bg-gray-100 p-2 rounded-full">
-//           <i class="fas fa-ellipsis-h"></i>
-//         </button>
-//       </div>
-
-//       <!-- Post Content -->
-//       <div class="mt-3">
-//         <p>Check out this beautiful sunset from my hike yesterday! Nature is truly amazing.</p>
-//       </div>
-//     </div>
-
-//     <!-- Post Image -->
-//     <div class="border-t border-gray-200">
-//       <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80"
-//         alt="Post" class="w-full object-cover">
-//     </div>
-
-//     <!-- Post Stats -->
-//     <div class="px-4 py-2 border-t border-gray-200 flex items-center justify-between text-gray-500 text-sm">
-//       <div class="flex items-center space-x-1">
-//         <i class="fas fa-thumbs-up text-blue-500"></i>
-//         <span>42</span>
-//       </div>
-//       <div>
-//         <span>8 comments · 3 shares</span>
-//       </div>
-//     </div>
-
-//     <!-- Post Actions -->
-//     <div class="px-4 py-2 border-t border-gray-200 grid grid-cols-3">
-//       <button
-//         class="flex items-center justify-center space-x-2 text-gray-500 hover:bg-gray-100 rounded-lg py-2">
-//         <i class="fas fa-thumbs-up"></i>
-//         <span>Like</span>
-//       </button>
-//       <button onclick="openCommentsModal()"
-//         class="flex items-center justify-center space-x-2 text-gray-500 hover:bg-gray-100 rounded-lg py-2">
-//         <i class="fas fa-comment"></i>
-//         <span>Comment</span>
-//       </button>
-//       <button
-//         class="flex items-center justify-center space-x-2 text-gray-500 hover:bg-gray-100 rounded-lg py-2">
-//         <i class="fas fa-share"></i>
-//         <span>Share</span>
-//       </button>
-//     </div>
-//   </div>

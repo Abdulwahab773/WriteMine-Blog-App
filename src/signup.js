@@ -74,7 +74,7 @@ googleBtn.addEventListener('click', async () => {
     } catch (error) {
         alert("Google Sign-in Failed: " + error.message);
     } finally {
-        hideLoader(); // Optional
+        hideLoader(); 
     }
 
 })

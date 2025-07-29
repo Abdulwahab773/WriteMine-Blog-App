@@ -122,129 +122,13 @@
             </div>
 
             <!-- Posts -->
-            <div class="bg-white rounded-lg shadow">
-                <!-- Post Header -->
-                <div class="p-4">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center space-x-3">
-                            <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Profile"
-                                class="w-10 h-10 rounded-full object-cover">
-                            <div>
-                                <h3 class="font-semibold">Sarah Johnson</h3>
-                                <p class="text-gray-500 text-sm">2 hrs ago · <i class="fas fa-globe-americas"></i></p>
-                            </div>
-                        </div>
-                        <button class="text-gray-500 hover:bg-gray-100 p-2 rounded-full">
-                            <i class="fas fa-ellipsis-h"></i>
-                        </button>
-                    </div>
 
-                    <!-- Post Content -->
-                    <div class="mt-3">
-                        <p>Just finished reading this amazing book about web development! Highly recommend it to all
-                            beginners.</p>
-                    </div>
-                </div>
+            <div class="space-y-6" id="allPosts">
 
-                <!-- Post Image -->
-                <div class="border-t border-gray-200">
-                    <img src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80"
-                        alt="Post" class="w-full object-cover">
-                </div>
+                
 
-                <!-- Post Stats -->
-                <div class="px-4 py-2 border-t border-gray-200 flex items-center justify-between text-gray-500 text-sm">
-                    <div class="flex items-center space-x-1">
-                        <i class="fas fa-thumbs-up text-blue-500"></i>
-                        <span>24</span>
-                    </div>
-                    <div>
-                        <span>5 comments · 2 shares</span>
-                    </div>
-                </div>
-
-                <!-- Post Actions -->
-                <div class="px-4 py-2 border-t border-gray-200 grid grid-cols-3">
-                    <button
-                        class="flex items-center justify-center space-x-2 text-gray-500 hover:bg-gray-100 rounded-lg py-2">
-                        <i class="fas fa-thumbs-up"></i>
-                        <span>Like</span>
-                    </button>
-                    <button onclick="openCommentsModal()"
-                        class="flex items-center justify-center space-x-2 text-gray-500 hover:bg-gray-100 rounded-lg py-2">
-                        <i class="fas fa-comment"></i>
-                        <span>Comment</span>
-                    </button>
-                    <button
-                        class="flex items-center justify-center space-x-2 text-gray-500 hover:bg-gray-100 rounded-lg py-2">
-                        <i class="fas fa-share"></i>
-                        <span>Share</span>
-                    </button>
-                </div>
+                <!-- ????????????????????????????????????? -->
             </div>
-
-            <!-- Another Post -->
-            <div class="bg-white rounded-lg shadow">
-                <!-- Post Header -->
-                <div class="p-4">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center space-x-3">
-                            <img src="https://randomuser.me/api/portraits/men/22.jpg" alt="Profile"
-                                class="w-10 h-10 rounded-full object-cover">
-                            <div>
-                                <h3 class="font-semibold">Michael Chen</h3>
-                                <p class="text-gray-500 text-sm">5 hrs ago · <i class="fas fa-user-friends"></i></p>
-                            </div>
-                        </div>
-                        <button class="text-gray-500 hover:bg-gray-100 p-2 rounded-full">
-                            <i class="fas fa-ellipsis-h"></i>
-                        </button>
-                    </div>
-
-                    <!-- Post Content -->
-                    <div class="mt-3">
-                        <p>Check out this beautiful sunset from my hike yesterday! Nature is truly amazing.</p>
-                    </div>
-                </div>
-
-                <!-- Post Image -->
-                <div class="border-t border-gray-200">
-                    <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80"
-                        alt="Post" class="w-full object-cover">
-                </div>
-
-                <!-- Post Stats -->
-                <div class="px-4 py-2 border-t border-gray-200 flex items-center justify-between text-gray-500 text-sm">
-                    <div class="flex items-center space-x-1">
-                        <i class="fas fa-thumbs-up text-blue-500"></i>
-                        <span>42</span>
-                    </div>
-                    <div>
-                        <span>8 comments · 3 shares</span>
-                    </div>
-                </div>
-
-                <!-- Post Actions -->
-                <div class="px-4 py-2 border-t border-gray-200 grid grid-cols-3">
-                    <button
-                        class="flex items-center justify-center space-x-2 text-gray-500 hover:bg-gray-100 rounded-lg py-2">
-                        <i class="fas fa-thumbs-up"></i>
-                        <span>Like</span>
-                    </button>
-                    <button onclick="openCommentsModal()"
-                        class="flex items-center justify-center space-x-2 text-gray-500 hover:bg-gray-100 rounded-lg py-2">
-                        <i class="fas fa-comment"></i>
-                        <span>Comment</span>
-                    </button>
-                    <button
-                        class="flex items-center justify-center space-x-2 text-gray-500 hover:bg-gray-100 rounded-lg py-2">
-                        <i class="fas fa-share"></i>
-                        <span>Share</span>
-                    </button>
-                </div>
-            </div>
-
-
 
 
 
@@ -357,18 +241,16 @@
                 <textarea class="w-full border-none outline-none resize-none text-lg" rows="5"
                     id="postContent"></textarea>
 
-                <!-- Image Preview -->
-                <div id="imagePreview" class="mt-4 hidden relative max-h-[50vh] overflow-y-auto">
+                <div id="imagePreview" class="mt-4 hidden relative max-h-[20vh] overflow-y-auto">
                     <div class="relative w-full">
                         <img id="previewImage" src="#" alt="Preview"
-                            class="w-full object-contain rounded-lg border border-gray-200 max-h-[30vh] mx-auto">
+                            class="w-full max-h-[45vh] object-contain rounded-lg border border-gray-200">
                         <button onclick="removeImage()"
                             class="absolute top-2 right-2 bg-white rounded-full p-2 shadow-md hover:bg-gray-100">
                             <i class="fas fa-times text-gray-600"></i>
                         </button>
                     </div>
                 </div>
-
 
 
                 <div class="border border-gray-200 rounded-lg p-3 flex justify-between items-center mt-4">
