@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword,updateProfile, onAuthStateChanged , signInWithEmailAndPassword    } from 'https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js';
-// import { getFirestore } from 'https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js'
+import { getAuth, createUserWithEmailAndPassword, updateProfile, onAuthStateChanged, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from 'https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js';
+import { getFirestore, collection, addDoc, doc, setDoc, Timestamp,updateDoc   } from 'https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js'
 
 
 const firebaseConfig = {
@@ -14,6 +14,8 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
+const db = getFirestore(app);
 
 
 export {
@@ -21,5 +23,14 @@ export {
   createUserWithEmailAndPassword,
   updateProfile,
   onAuthStateChanged,
-  signInWithEmailAndPassword   
+  signInWithEmailAndPassword,
+  provider,
+  signInWithPopup,
+  db,
+  collection,
+  addDoc, 
+  doc,
+  setDoc,
+  Timestamp,
+  updateDoc 
 }

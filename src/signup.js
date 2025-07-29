@@ -1,8 +1,9 @@
-import { auth, createUserWithEmailAndPassword, updateProfile } from "./firebase.js";
+import { auth, createUserWithEmailAndPassword, updateProfile, signInWithPopup, provider } from "./firebase.js";
+import { showLoader, hideLoader } from "./helpers.js";
 
 let loader = document.getElementById("loader");
 let signUpForm = document.getElementById("signUpForm");
-
+let googleBtn = document.getElementById("googleBtn");
 
 
 const fileUpload = async () => {
@@ -53,7 +54,7 @@ const signUp = async () => {
             photoURL: uploadedImageURL,
         });
 
-        location = "./dashboard.html";
+        location = "./home.html";
         hideLoader();
 
     } catch (error) {
@@ -63,15 +64,24 @@ const signUp = async () => {
 };
 
 
+googleBtn.addEventListener('click', async () => {
+    showLoader();
+
+    try {
+        const result = await signInWithPopup(auth, provider);
+        location = "./home.html";
+
+    } catch (error) {
+        alert("Google Sign-in Failed: " + error.message);
+    } finally {
+        hideLoader(); // Optional
+    }
+
+})
 
 
-const showLoader = () => {
-    loader.classList.remove("hidden");
-}
 
-const hideLoader = () => {
-    loader.classList.add("hidden");
-}
+
 
 signUpForm.addEventListener('submit', (e) => {
     e.preventDefault()

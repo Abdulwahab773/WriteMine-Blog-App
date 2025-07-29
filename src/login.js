@@ -1,4 +1,5 @@
 import { auth, signInWithEmailAndPassword } from "./firebase.js";
+import { showLoader, hideLoader } from "./helpers.js";
 
 let email = document.getElementById("email");
 let password = document.getElementById("password");
@@ -11,7 +12,7 @@ const loginUser = () => {
         .then((userCredential) => {
             const user = userCredential.user;
             hideLoader();
-            location = "./dashboard.html"
+            location = "./home.html"
         })
         .catch((error) => {
             console.log(error);
@@ -19,14 +20,6 @@ const loginUser = () => {
         });
 }
 
-
-const showLoader = () => {
-    loader.classList.remove("hidden");
-}
-
-const hideLoader = () => {
-    loader.classList.add("hidden");
-}
 
 
 loginForm.addEventListener('submit', (e) => {
