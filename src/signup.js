@@ -1,4 +1,4 @@
-import { auth, createUserWithEmailAndPassword, updateProfile, signInWithPopup, provider } from "./firebase.js";
+import { auth, createUserWithEmailAndPassword, updateProfile, signInWithPopup, provider , addDoc , collection, Timestamp, db } from "./firebase.js";
 import { showLoader, hideLoader } from "./helpers.js";
 
 let loader = document.getElementById("loader");
@@ -40,7 +40,7 @@ const signUp = async () => {
     const email = document.getElementById("email")?.value?.trim();
     const password = document.getElementById("password")?.value;
 
-    let uploadedImageURL = "https://example.com/default-avatar.png";
+    let uploadedImageURL = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSpwxCN33LtdMLbWdhafc4HxabqpaU0qVbDxQ&s";
 
     try {
         const profilePic = document.getElementById("profilePic");
@@ -49,6 +49,11 @@ const signUp = async () => {
         }
 
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const docRef = await addDoc(collection(db, "users"), {
+            name,
+            image: uploadedImageURL,
+            timeCreated: Timestamp.now() 
+        });
         await updateProfile(userCredential.user, {
             displayName: name,
             photoURL: uploadedImageURL,

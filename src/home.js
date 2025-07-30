@@ -104,7 +104,7 @@ window.removeImage = removeImage;
 
 
 
-import { auth, onAuthStateChanged, db, collection, addDoc, doc, setDoc, Timestamp, updateDoc, onSnapshot, query, where, orderBy } from "./firebase.js"
+import { auth, onAuthStateChanged, db, collection, addDoc, signOut, doc, setDoc, Timestamp, updateDoc, onSnapshot, query, where, orderBy } from "./firebase.js"
 import { showLoader, hideLoader } from "./helpers.js";
 
 
@@ -146,6 +146,9 @@ onAuthStateChanged(auth, (user) => {
 
 let postContent = document.getElementById("postContent");
 let postBtn = document.getElementById('postBtn');
+let logoutBtn = document.getElementById("logoutBtn");
+let sidebarContacts = document.getElementById("sidebarContacts");
+let allPosts = document.getElementById("allPosts");
 
 
 
@@ -153,24 +156,28 @@ let postBtn = document.getElementById('postBtn');
 const fileUpload = async () => {
 
   let imageUpload = document.getElementById("imageUpload");
-  let file = imageUpload.files[0];
 
-  let formData = new FormData();
-  formData.append("file", file);
-  formData.append("upload_preset", "WriteMine");
+  if (imageUpload.files.length > 0) {
 
-  try {
-    let res = await fetch("https://api.cloudinary.com/v1_1/dsdnmgnpr/image/upload", {
-      method: "POST",
-      body: formData
-    });
-    let data = await res.json();
-    return data.secure_url;
+    let file = imageUpload.files[0];
 
-  } catch (error) {
-    console.log("❌ Cloudinary upload error:", error);
-    throw error;
+    let formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", "WriteMine");
+
+    try {
+      let res = await fetch("https://api.cloudinary.com/v1_1/dsdnmgnpr/image/upload", {
+        method: "POST",
+        body: formData
+      });
+      let data = await res.json();
+      return data.secure_url;
+
+    } catch (error) {
+      let er = error;
+    }
   }
+
 };
 
 
@@ -186,9 +193,9 @@ const createPost = async () => {
       userName: currentUserName,
       userPic: currentUserPic,
       timestamp: Timestamp.now(),
-      content: postContent.value,
+      content: postContent.value.trim(),
       uid: currentUserUID,
-      image: await fileUpload()
+      image: await fileUpload() || ""
     });
     hideLoader();
     closePostModal();
@@ -206,20 +213,21 @@ postBtn.addEventListener('click', () => {
   postContent.value = "";
 })
 
-let allPosts = document.getElementById("allPosts");
 
 
 let getPosts = async () => {
 
   let collectionRef = collection(db, "posts");
-  let dbRef = query(collectionRef, orderBy("timestamp", "asc"))
+  let dbRef = query(collectionRef, orderBy("timestamp", "desc"))
   await onSnapshot(dbRef, (snapshot) => {
+    allPosts.innerHTML = "";
+
     snapshot.forEach((docs) => {
       let data = docs.data();
 
-
       let createdAt = data.timestamp;
       let date = createdAt.toDate().toLocaleString();
+
 
       allPosts.innerHTML += `<div class="bg-white rounded-lg shadow">
     <!-- Post Header -->
@@ -245,13 +253,16 @@ let getPosts = async () => {
     </div>
 
     <!-- Post Image -->
-    <div class="border-t border-gray-200">
+    ${data.image ? `<div class="border-t border-gray-200">
       <img src="${data.image}"
         alt="Post" class="w-full object-cover">
-    </div>
+    </div>` : ""}
+    
+    
 
     <!-- Post Stats -->
-    <div class="px-4 py-2 border-t border-gray-200 flex items-center justify-between text-gray-500 text-sm">
+    ${data.image ? `<div class="px-4 py-2 border-t border-gray-200 flex items-center justify-between text-gray-500 text-sm">` : `<div class="px-4 py-2  flex items-center justify-between text-gray-500 text-sm">`}
+    
       <div class="flex items-center space-x-1">
         <i class="fas fa-thumbs-up text-blue-500"></i>
         <span>42</span>
@@ -279,36 +290,51 @@ let getPosts = async () => {
         <span>Share</span>
       </button>
     </div>
-  </div>`
-
-
-
-    })
+  </div>`})
   })
-
 }
 
+
+const getAllUsers = async () => {
+  let collectionRef = collection(db, "users");
+  let dbRef = query(collectionRef, orderBy("timeCreated", "desc"))
+  await onSnapshot(dbRef, (snapshot) => {
+    sidebarContacts.innerHTML = "";
+    snapshot.forEach((docs) => {
+      let data = docs.data();
+      sidebarContacts.innerHTML += 
+      `<div class="flex items-center space-x-3 p-1 hover:bg-gray-100 rounded cursor-pointer">
+  <div class="relative">
+    <img src="${data.image}" alt="Contact"
+      class="w-8 h-8 rounded-full object-cover">
+      <div
+        class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white">
+      </div>
+  </div>
+  <span class="font-medium">${data.name}</span>
+</div>`})
+  })
+}
+
+
+
+
+
+
+
+
+getAllUsers()
 getPosts()
 
 
 
+const logout = () => {
+  signOut(auth).then(() => {
+    location = "./index.html";
 
+  }).catch((error) => {
+    console.log(error);
+  });
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Sample Post:
-
-// < !--Another Post-- >
+logoutBtn.addEventListener('click', logout)
