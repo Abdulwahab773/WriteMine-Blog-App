@@ -104,7 +104,7 @@ window.removeImage = removeImage;
 
 
 
-import { auth, onAuthStateChanged, db, collection, addDoc, signOut, doc, setDoc, Timestamp, updateDoc, onSnapshot, query, where, orderBy } from "./firebase.js"
+import { auth, onAuthStateChanged, db, collection, addDoc, signOut, doc, setDoc, Timestamp, updateDoc, onSnapshot, query, where, orderBy, increment, arrayUnion } from "./firebase.js"
 import { showLoader, hideLoader } from "./helpers.js";
 
 
@@ -120,6 +120,8 @@ let modalProfilePic = document.getElementById("modalProfilePic");
 let currentUserUID = null;
 let currentUserName = null;
 let currentUserPic = null;
+
+
 
 onAuthStateChanged(auth, (user) => {
   if (user) {
@@ -149,6 +151,7 @@ let postBtn = document.getElementById('postBtn');
 let logoutBtn = document.getElementById("logoutBtn");
 let sidebarContacts = document.getElementById("sidebarContacts");
 let allPosts = document.getElementById("allPosts");
+let mainLoader = document.getElementById("mainLoader");
 
 
 
@@ -195,8 +198,15 @@ const createPost = async () => {
       timestamp: Timestamp.now(),
       content: postContent.value.trim(),
       uid: currentUserUID,
-      image: await fileUpload() || ""
+      likes: 0,
+      image: await fileUpload() || "",
+      comments: []
     });
+
+    await updateDoc(docRef, {
+      docId: docRef.id
+    });
+
     hideLoader();
     closePostModal();
   } catch (error) {
@@ -214,14 +224,24 @@ postBtn.addEventListener('click', () => {
 })
 
 
+const startMainLoader = () => {
+  mainLoader.classList.remove('hidden');
+}
+
+const stopMainLoader = () => {
+  mainLoader.classList.add('hidden');
+}
 
 let getPosts = async () => {
+  startMainLoader();
+
 
   let collectionRef = collection(db, "posts");
   let dbRef = query(collectionRef, orderBy("timestamp", "desc"))
   await onSnapshot(dbRef, (snapshot) => {
     allPosts.innerHTML = "";
 
+    stopMainLoader();
     snapshot.forEach((docs) => {
       let data = docs.data();
 
@@ -265,7 +285,7 @@ let getPosts = async () => {
     
       <div class="flex items-center space-x-1">
         <i class="fas fa-thumbs-up text-blue-500"></i>
-        <span>42</span>
+        <span>${data.likes}</span>
       </div>
       <div>
         <span>8 comments · 3 shares</span>
@@ -274,12 +294,12 @@ let getPosts = async () => {
 
     <!-- Post Actions -->
     <div class="px-4 py-2 border-t border-gray-200 grid grid-cols-3">
-      <button
+      <button id="likeBtn" onclick="handleLikes('${data.docId}'); triggerCelebration()" 
         class="flex items-center justify-center space-x-2 text-gray-500 hover:bg-gray-100 rounded-lg py-2">
         <i class="fas fa-thumbs-up"></i>
         <span>Like</span>
       </button>
-      <button onclick="openCommentsModal()"
+      <button onclick="openCommentsModal(); handelComments('${data.docId}')"
         class="flex items-center justify-center space-x-2 text-gray-500 hover:bg-gray-100 rounded-lg py-2">
         <i class="fas fa-comment"></i>
         <span>Comment</span>
@@ -289,10 +309,86 @@ let getPosts = async () => {
         <i class="fas fa-share"></i>
         <span>Share</span>
       </button>
-    </div>
-  </div>`})
+      </div>
+      </div>`})
   })
 }
+
+
+
+
+
+let addCommentBtn = document.getElementById("addCommentBtn");
+let commentInput = document.getElementById("commentInput");
+
+const handelComments = async (id) => {
+  const dbref = doc(db, "posts", id);
+  
+  const addComment = async () => {
+    await updateDoc(dbref, {
+      comments: arrayUnion({
+        text: commentInput.value,
+        timestamp: Timestamp.now(),
+        userName: currentUserName,
+        userId: currentUserUID,
+        userPic: currentUserPic
+      })
+    });
+    console.log("Comment Added bhai");
+  } 
+
+  addCommentBtn.addEventListener('click', addComment)
+  
+}
+
+
+
+window.handelComments = handelComments;
+
+
+
+
+
+
+
+
+const handleLikes = async (id) => {
+  const dbref = doc(db, "posts", id);
+
+  await updateDoc(dbref, {
+    likes: increment(1)
+  });
+}
+
+
+
+function triggerCelebration() {
+  const container = document.getElementById('celebration-container');
+  const emojis = ["🎉", "✨", "💖", "💥", "🔥", "💫"];
+
+  for (let i = 0; i < 20; i++) {
+    const emoji = document.createElement('div');
+    emoji.classList.add('emoji');
+    emoji.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+    emoji.style.left = Math.random() * 100 + "vw";
+    emoji.style.top = (Math.random() * 50 + 30) + "vh";
+    emoji.style.fontSize = (Math.random() * 24 + 16) + "px";
+
+    container.appendChild(emoji);
+
+    setTimeout(() => {
+      emoji.remove();
+    }, 1500);
+  }
+}
+
+
+
+window.handleLikes = handleLikes;
+window.triggerCelebration = triggerCelebration;
+
+
+
 
 
 const getAllUsers = async () => {
@@ -302,8 +398,8 @@ const getAllUsers = async () => {
     sidebarContacts.innerHTML = "";
     snapshot.forEach((docs) => {
       let data = docs.data();
-      sidebarContacts.innerHTML += 
-      `<div class="flex items-center space-x-3 p-1 hover:bg-gray-100 rounded cursor-pointer">
+      sidebarContacts.innerHTML +=
+        `<div class="flex items-center space-x-3 p-1 hover:bg-gray-100 rounded cursor-pointer">
   <div class="relative">
     <img src="${data.image}" alt="Contact"
       class="w-8 h-8 rounded-full object-cover">
@@ -323,8 +419,8 @@ const getAllUsers = async () => {
 
 
 
-getAllUsers()
-getPosts()
+getAllUsers();
+getPosts();
 
 
 
@@ -338,3 +434,5 @@ const logout = () => {
 }
 
 logoutBtn.addEventListener('click', logout)
+
+

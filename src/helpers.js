@@ -6,6 +6,8 @@ const hideLoader = () => {
     loader.classList.add("hidden");
 }
 
+
+
 export {
     showLoader,
     hideLoader,
