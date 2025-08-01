@@ -1,51 +1,63 @@
+import { auth, onAuthStateChanged, db, collection, addDoc, signOut, doc, setDoc, Timestamp, updateDoc, onSnapshot, query, where, orderBy, increment, arrayUnion } from "./firebase.js"
+import { showLoader, hideLoader } from "./helpers.js";
 
-// User dropdown functionality
-const userDropdownBtn = document.getElementById('userDropdownBtn');
-const userDropdown = document.getElementById('userDropdown');
+let navUserName = document.getElementById("navUserName");
+let leftSideBarUserName = document.getElementById("leftSideBarUserName");
+let leftSideBarUserEmail = document.getElementById("leftSideBarUserEmail");
+let whatsOnYourMindBtn = document.getElementById("whatsOnYourMindBtn");
+let modalUserName = document.getElementById("modalUserName");
+let navBarProfilePic = document.getElementById('navBarProfilePic');
+let leftSideBarProfilePic = document.getElementById('leftSideBarProfilePic');
+let createPostProfilePic = document.getElementById("createPostProfilePic");
+let modalProfilePic = document.getElementById("modalProfilePic");
+let commentModalUserPic = document.getElementById("commentModalUserPic");
+let postContent = document.getElementById("postContent");
+let postBtn = document.getElementById('postBtn');
+let logoutBtn = document.getElementById("logoutBtn");
+let sidebarContacts = document.getElementById("sidebarContacts");
+let allPosts = document.getElementById("allPosts");
+let mainLoader = document.getElementById("mainLoader");
+let bio = document.getElementById("bio");
+let addbioBtn = document.getElementById('addbioBtn');
+let addCommentBtn = document.getElementById("addCommentBtn");
+let commentInput = document.getElementById("commentInput");
+let commentsContainer = document.getElementById("commentsContainer");
+let noCommentsSection = document.getElementById("noCommentsSection");
+let userDropdownBtn = document.getElementById('userDropdownBtn');
+let userDropdown = document.getElementById('userDropdown');
+let currentUserUID = null;
+let currentUserName = null;
+let currentUserPic = null;
+let currentPostId = null;
+
 
 userDropdownBtn.addEventListener('click', () => {
   userDropdown.classList.toggle('hidden');
 });
 
-// Close dropdown when clicking outside
 window.addEventListener('click', (e) => {
   if (!userDropdownBtn.contains(e.target) && !userDropdown.contains(e.target)) {
     userDropdown.classList.add('hidden');
   }
 });
 
-// Mobile search toggle
-const mobileSearchBtn = document.querySelector('.md\\:hidden.text-gray-600');
-const mobileSearch = document.getElementById('mobileSearch');
-
-mobileSearchBtn.addEventListener('click', () => {
-  mobileSearch.classList.toggle('hidden');
-});
-
-// Post modal functions
 function openPostModal(type = 'post') {
   const modal = document.getElementById('postModal');
   const modalTitle = document.getElementById('modalTitle');
-  const postContent = document.getElementById('postContent');
 
   switch (type) {
     case 'live':
       modalTitle.textContent = 'Create Live Video Post';
-      // postContent.placeholder = 'What are you streaming about?';
       break;
     case 'photo':
       modalTitle.textContent = 'Create Photo/Video Post';
-      // postContent.placeholder = 'Say something about these photos...';
       break;
     case 'feeling':
       modalTitle.textContent = 'Share Your Feeling';
-      // postContent.placeholder = 'How are you feeling today?';
       break;
     default:
       modalTitle.textContent = 'Create Post';
-    // postContent.placeholder = 'What\'s on your mind, John?';
   }
-
   modal.classList.remove('hidden');
 }
 
@@ -55,14 +67,10 @@ function closePostModal() {
   document.getElementById('imageUpload').value = '';
 }
 
-// Comments modal functions
-
-
 function closeCommentsModal() {
   document.getElementById('commentsModal').classList.add('hidden');
 }
 
-// Image preview functionality
 function previewFile() {
   const preview = document.getElementById('previewImage');
   const file = document.getElementById('imageUpload').files[0];
@@ -83,7 +91,22 @@ function removeImage() {
   document.getElementById('imageUpload').value = '';
 }
 
-// Close modals when clicking outside
+const startMainLoader = () => {
+  mainLoader.classList.remove('hidden');
+}
+
+const stopMainLoader = () => {
+  mainLoader.classList.add('hidden');
+}
+
+const showModalLoader = () => {
+  document.getElementById("modalLoader").classList.remove('hidden')
+}
+
+const hideModalLoader = () => {
+  document.getElementById("modalLoader").classList.add('hidden')
+}
+
 window.onclick = function (event) {
   if (event.target == document.getElementById('postModal')) {
     closePostModal();
@@ -93,41 +116,12 @@ window.onclick = function (event) {
   }
 }
 
-window.closeCommentsModal = closeCommentsModal;
-window.openPostModal = openPostModal;
-window.closePostModal = closePostModal;
-window.previewFile = previewFile;
-window.removeImage = removeImage;
-
-
-
-import { auth, onAuthStateChanged, db, collection, addDoc, signOut, doc, setDoc, Timestamp, updateDoc, onSnapshot, query, where, orderBy, increment, arrayUnion } from "./firebase.js"
-import { showLoader, hideLoader } from "./helpers.js";
-
-
-let navUserName = document.getElementById("navUserName");
-let leftSideBarUserName = document.getElementById("leftSideBarUserName");
-let leftSideBarUserEmail = document.getElementById("leftSideBarUserEmail");
-let whatsOnYourMindBtn = document.getElementById("whatsOnYourMindBtn");
-let modalUserName = document.getElementById("modalUserName");
-let navBarProfilePic = document.getElementById('navBarProfilePic');
-let leftSideBarProfilePic = document.getElementById('leftSideBarProfilePic');
-let createPostProfilePic = document.getElementById("createPostProfilePic");
-let modalProfilePic = document.getElementById("modalProfilePic");
-let commentModalUserPic = document.getElementById("commentModalUserPic");
-let currentUserUID = null;
-let currentUserName = null;
-let currentUserPic = null;
-
-
-
 onAuthStateChanged(auth, (user) => {
   if (user) {
     currentUserUID = user.uid;
     currentUserName = user.displayName;
     currentUserPic = user.photoURL;
 
-    console.log(user);
     navUserName.innerHTML = user.displayName;
     leftSideBarUserName.innerHTML = user.displayName;
     leftSideBarUserEmail.innerHTML = user.email;
@@ -139,24 +133,29 @@ onAuthStateChanged(auth, (user) => {
     createPostProfilePic.src = user.photoURL;
     modalProfilePic.src = user.photoURL;
     commentModalUserPic.src = user.photoURL;
+  } else {
+    location = "./index.html"
   }
 });
 
+window.addEventListener("DOMContentLoaded", () => {
+  const savedBio = localStorage.getItem("bio");
+  if (savedBio) {
+    bio.innerText = savedBio;
+    addbioBtn.classList.add("hidden");
+  }
+});
 
-
-
-let postContent = document.getElementById("postContent");
-let postBtn = document.getElementById('postBtn');
-let logoutBtn = document.getElementById("logoutBtn");
-let sidebarContacts = document.getElementById("sidebarContacts");
-let allPosts = document.getElementById("allPosts");
-let mainLoader = document.getElementById("mainLoader");
-
-
-
+const addBio = () => {
+  const bioPrompt = prompt("Enter Bio Here");
+  if (bioPrompt && bioPrompt.trim() !== "") {
+    localStorage.setItem("bio", bioPrompt);
+    bio.innerText = bioPrompt;
+    addbioBtn.classList.add("hidden");
+  }
+};
 
 const fileUpload = async () => {
-
   let imageUpload = document.getElementById("imageUpload");
 
   if (imageUpload.files.length > 0) {
@@ -179,15 +178,23 @@ const fileUpload = async () => {
       let er = error;
     }
   }
-
 };
-
-
-
-
 
 const createPost = async () => {
   showLoader();
+
+  const postText = postContent.value.trim()
+
+  if (!postText) {
+    Swal.fire({
+      title: "Error!",
+      text: "Post field cannot be empty!",
+      icon: "error"
+    });
+    hideLoader();
+    closePostModal();
+    return;
+  }
 
   try {
 
@@ -195,11 +202,12 @@ const createPost = async () => {
       userName: currentUserName,
       userPic: currentUserPic,
       timestamp: Timestamp.now(),
-      content: postContent.value.trim(),
+      content: postText,
       uid: currentUserUID,
       likes: 0,
       image: await fileUpload() || "",
-      comments: []
+      comments: [],
+      commentsCount: 0
     });
 
     await updateDoc(docRef, {
@@ -213,27 +221,15 @@ const createPost = async () => {
     hideLoader();
     closePostModal();
   }
-
 }
-
 
 postBtn.addEventListener('click', () => {
   createPost();
   postContent.value = "";
 })
 
-
-const startMainLoader = () => {
-  mainLoader.classList.remove('hidden');
-}
-
-const stopMainLoader = () => {
-  mainLoader.classList.add('hidden');
-}
-
 let getPosts = async () => {
   startMainLoader();
-
 
   let collectionRef = collection(db, "posts");
   let dbRef = query(collectionRef, orderBy("timestamp", "desc"))
@@ -247,9 +243,7 @@ let getPosts = async () => {
       let createdAt = data.timestamp;
       let date = createdAt.toDate().toLocaleString();
 
-
       allPosts.innerHTML += `<div class="bg-white rounded-lg shadow">
-    <!-- Post Header -->
     <div class="p-4">
       <div class="flex items-center justify-between">
         <div class="flex items-center space-x-3">
@@ -265,21 +259,16 @@ let getPosts = async () => {
         </button>
       </div>
 
-      <!-- Post Content -->
       <div class="mt-3">
         <p>${data.content}</p>
       </div>
     </div>
 
-    <!-- Post Image -->
     ${data.image ? `<div class="border-t border-gray-200">
       <img src="${data.image}"
         alt="Post" class="w-full object-cover">
     </div>` : ""}
-    
-    
 
-    <!-- Post Stats -->
     ${data.image ? `<div class="px-4 py-2 border-t border-gray-200 flex items-center justify-between text-gray-500 text-sm">` : `<div class="px-4 py-2  flex items-center justify-between text-gray-500 text-sm">`}
     
       <div class="flex items-center space-x-1">
@@ -287,11 +276,10 @@ let getPosts = async () => {
         <span>${data.likes}</span>
       </div>
       <div>
-        <span>8 comments</span>
+        <span>${data.commentsCount} Comments</span>
       </div>
     </div>
 
-    <!-- Post Actions -->
     <div class="px-4 py-2 border-t border-gray-200 grid grid-cols-3">
       <button id="likeBtn" onclick="handleLikes('${data.docId}'); triggerCelebration()" 
         class="flex items-center justify-center space-x-2 text-gray-500 hover:bg-gray-100 rounded-lg py-2">
@@ -313,42 +301,60 @@ let getPosts = async () => {
   })
 }
 
-
-
-
-
-let addCommentBtn = document.getElementById("addCommentBtn");
-let commentInput = document.getElementById("commentInput");
-let commentsContainer = document.getElementById("commentsContainer");
-
-
-
 const handelComments = async (id) => {
   const dbref = doc(db, "posts", id);
+  currentPostId = id;
 
   const addComment = async () => {
-    await updateDoc(dbref, {
-      comments: arrayUnion({
-        text: commentInput.value,
-        timestamp: Timestamp.now(),
-        userName: currentUserName,
-        userId: currentUserUID,
-        userPic: currentUserPic
-      })
-    });
-  }
-  
-  addCommentBtn.addEventListener('click', () => {
-    addComment();
-    commentInput.value = "";
-  })
+    showModalLoader();
+    if (!currentPostId) return;
 
-}
+    const commentText = commentInput.value.trim();
 
+    if (!commentText) {
+      Swal.fire({
+        title: "Error!",
+        text: "Comment field cannot be empty!",
+        icon: "error"
+      });
+      hideModalLoader();
+      return;
+    }
 
+    addCommentBtn.disabled = true;
+    try {
+      await updateDoc(dbref, {
+        comments: arrayUnion({
+          text: commentText,
+          commentTime: Timestamp.now(),
+          userName: currentUserName,
+          userId: currentUserUID,
+          userPic: currentUserPic
+        })
+      });
 
-window.handelComments = handelComments;
+      await updateDoc(dbref, {
+        commentsCount: increment(1)
+      });
 
+      commentInput.value = "";
+      hideModalLoader();
+    } catch (error) {
+      Swal.fire({
+        title: "Error!",
+        text: "Failed to add comment. Please try again!",
+        icon: "error"
+      });
+      hideModalLoader();
+    } finally {
+      addCommentBtn.disabled = false;
+    }
+  };
+
+  addCommentBtn.replaceWith(addCommentBtn.cloneNode(true));
+  addCommentBtn = document.getElementById("addCommentBtn");
+  addCommentBtn.addEventListener('click', addComment);
+};
 
 const openCommentsModal = async (id) => {
 
@@ -361,10 +367,22 @@ const openCommentsModal = async (id) => {
     snapshot.forEach((docs) => {
       let data = docs.data();
       let allComments = data.comments;
+
+      if (data.commentsCount === 0) {
+        noCommentsSection.classList.remove('hidden')
+      } else {
+        noCommentsSection.classList.add('hidden')
+      }
+
       allComments.map((comment) => {
-        commentsContainer.innerHTML += `  <div class="flex space-x-3" >
+
+        let createdAt = comment.commentTime;
+        let date = createdAt.toDate().toLocaleString();
+
+        commentsContainer.innerHTML += `  
+<div class="flex space-x-3" >
     <img src="${comment.userPic}" alt="Profile"
-      class="w-8 h-8 rounded-full object-cover">
+      class="w-10 h-10 rounded-full mt-2 object-cover">
       <div class="flex-1">
         <div class="bg-gray-100 rounded-lg p-3">
           <h4 class="font-medium">${comment.userName}</h4>
@@ -372,26 +390,15 @@ const openCommentsModal = async (id) => {
           </p>
         </div>
         <div class="flex items-center space-x-4 mt-1 ml-3 text-sm text-gray-500">
-          <span>3m ago</span>
+          <span>${date}</span>
           <button class="hover:text-gray-700">Like</button>
           <button class="hover:text-gray-700">Reply</button>
         </div>
       </div>
-    </div>`
-      })
-
+    </div>`})
     })
   })
 }
-
-
-window.openCommentsModal = openCommentsModal
-
-
-
-
-
-
 
 const handleLikes = async (id) => {
   const dbref = doc(db, "posts", id);
@@ -400,8 +407,6 @@ const handleLikes = async (id) => {
     likes: increment(1)
   });
 }
-
-
 
 function triggerCelebration() {
   const container = document.getElementById('celebration-container');
@@ -423,15 +428,6 @@ function triggerCelebration() {
   }
 }
 
-
-
-window.handleLikes = handleLikes;
-window.triggerCelebration = triggerCelebration;
-
-
-
-
-
 const getAllUsers = async () => {
   let collectionRef = collection(db, "users");
   let dbRef = query(collectionRef, orderBy("timeCreated", "desc"))
@@ -443,7 +439,7 @@ const getAllUsers = async () => {
         `<div class="flex items-center space-x-3 p-1 hover:bg-gray-100 rounded cursor-pointer">
   <div class="relative">
     <img src="${data.image}" alt="Contact"
-      class="w-8 h-8 rounded-full object-cover">
+      class="w-8 h-8 rounded-full object-cover ">
       <div
         class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white">
       </div>
@@ -453,27 +449,31 @@ const getAllUsers = async () => {
   })
 }
 
-
-
-
-
-
-
-
-getAllUsers();
-getPosts();
-
-
-
 const logout = () => {
   signOut(auth).then(() => {
     location = "./index.html";
 
   }).catch((error) => {
-    console.log(error);
+    Swal.fire({
+      title: "Error!",
+      text: "Something Went Wrong!",
+      icon: "error"
+    });
   });
 }
 
 logoutBtn.addEventListener('click', logout)
 
+getAllUsers();
+getPosts();
 
+window.closeCommentsModal = closeCommentsModal;
+window.openPostModal = openPostModal;
+window.closePostModal = closePostModal;
+window.previewFile = previewFile;
+window.removeImage = removeImage;
+window.addBio = addBio;
+window.handelComments = handelComments;
+window.openCommentsModal = openCommentsModal;
+window.handleLikes = handleLikes;
+window.triggerCelebration = triggerCelebration;

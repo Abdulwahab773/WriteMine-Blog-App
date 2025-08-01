@@ -1,4 +1,4 @@
-import { auth, signInWithEmailAndPassword } from "./firebase.js";
+import { auth, signInWithEmailAndPassword, onAuthStateChanged } from "./firebase.js";
 import { showLoader, hideLoader } from "./helpers.js";
 
 let email = document.getElementById("email");
@@ -20,7 +20,11 @@ const loginUser = () => {
         });
 }
 
-
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        location = "./home.html";
+    }
+})
 
 loginForm.addEventListener('submit', (e) => {
     e.preventDefault();

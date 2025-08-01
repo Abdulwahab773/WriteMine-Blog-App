@@ -21,128 +21,88 @@
         <p class="text-lg font-semibold text-gray-700 dark:text-gray-200">Loading...</p>
     </div>
 
-    <!-- Navbar -->
     <nav class="bg-white shadow-sm sticky top-0 z-10">
         <div class="max-w-6xl mx-auto px-4">
             <div class="flex justify-between items-center py-3">
-                <!-- Logo -->
                 <div class="flex items-center">
                     <span class="text-2xl font-bold"><span
                             class="text-2xl font-bold text-indigo-600">Write</span>Mine</span>
                 </div>
 
-
-                <!-- User Profile with Dropdown -->
                 <div class="flex items-center space-x-4 relative">
-                    <!-- Mobile Search Button -->
-                    <button class="md:hidden text-gray-600 p-2 rounded-full hover:bg-gray-100">
-                        <i class="fas fa-search"></i>
-                    </button>
 
-                    <!-- User Info -->
                     <div class="flex items-center cursor-pointer group" id="userDropdownBtn">
-                        <img src="https://randomuser.me/api/portraits/men/32.jpg" id="navBarProfilePic" alt="Profile"
-                            class="w-14 h-14 rounded-full object-fill">
-                        <span id="navUserName" class="ml-2 font-medium hidden md:inline">John Doe</span>
+                        <img src="" id="navBarProfilePic" alt="Profile" class="w-12 h-12 rounded-full object-cover">
+                        <span id="navUserName" class="ml-2 font-medium hidden md:inline">User Name</span>
                         <i class="fas fa-caret-down ml-1 text-gray-500 hidden md:inline"></i>
                     </div>
 
-                    <!-- Dropdown Menu -->
                     <div id="userDropdown"
-                        class="hidden absolute right-0 top-12 bg-white rounded-md shadow-lg py-1 w-48 z-20">
-                        <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Profile</a>
-                        <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Settings</a>
-                        <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Posts</a>
-
+                        class="hidden border border-gray-400 absolute right-0 top-12 bg-white rounded-md shadow-lg py-1 w-48 z-20">
+                        <a href="#" class="block border-b px-4 py-2 text-gray-700 hover:bg-gray-100">Profile</a>
+                        <a href="#" class="block border-b px-4 py-2 text-gray-700 hover:bg-gray-100">Settings</a>
+                        <a href="#" class="block border-b px-4 py-2 text-gray-700 hover:bg-gray-100">Posts</a>
                         <button id="logoutBtn"
                             class="block px-4 py-2 text-gray-700 w-full text-left hover:bg-gray-100 border-t border-gray-100">Logout</button>
                     </div>
                 </div>
             </div>
-
-            <!-- Mobile Search Bar (Hidden by default) -->
-            <div id="mobileSearch" class="hidden md:hidden py-2">
-                <div class="flex items-center bg-gray-100 rounded-full px-4 py-2">
-                    <i class="fas fa-search text-gray-500 mr-2"></i>
-                    <input type="text" placeholder="Search WriteMine"
-                        class="bg-transparent border-none outline-none w-full">
-                </div>
-            </div>
         </div>
     </nav>
 
-    <!-- Main Content -->
     <div class="max-w-6xl mx-auto px-4 py-6 grid grid-cols-1 md:grid-cols-12 gap-6">
-        <!-- Left Sidebar - User Profile -->
         <div class="hidden md:block md:col-span-3">
             <div class="bg-white rounded-lg shadow p-4 sticky top-20">
                 <div class="flex items-center space-x-3 mb-4">
-                    <img src="https://randomuser.me/api/portraits/men/32.jpg" id="leftSideBarProfilePic" alt="Profile"
-                        class="w-12 h-12 rounded-full object-cover">
+                    <img src="" id="leftSideBarProfilePic" alt="Profile" class="w-12 h-12 rounded-full object-cover">
                     <div>
-                        <h3 id="leftSideBarUserName" class="font-semibold">John Doe</h3>
-                        <p id="leftSideBarUserEmail" class="text-gray-500 text-sm">@johndoe</p>
+                        <h3 id="leftSideBarUserName" class="font-semibold">User Name</h3>
+                        <p id="leftSideBarUserEmail" class="text-gray-500 text-sm">@Someone</p>
                     </div>
                 </div>
-                <div class="border-t border-gray-200 pt-3 mt-3">
-                    <div class="flex justify-between text-sm mb-2">
-                        <span class="text-gray-500">Posts</span>
-                        <span class="font-medium">42</span>
-                    </div>
-                    <div class="flex justify-between text-sm mb-2">
-                        <span class="text-gray-500">Following</span>
-                        <span class="font-medium">156</span>
-                    </div>
-                    <div class="flex justify-between text-sm">
-                        <span class="text-gray-500">Followers</span>
-                        <span class="font-medium">89</span>
-                    </div>
+                <div class="border-t border-gray-200 pt-2 w-full text-center text-sm text-gray-700 space-y-2">
+                    <p id="bio" class="italic text-gray-600">No bio added yet.</p>
+                    <button id="addbioBtn" onclick="addBio()"
+                        class="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700">
+                        Add Bio
+                    </button>
                 </div>
             </div>
         </div>
 
-        <!-- Main Feed -->
         <div class="col-span-12 md:col-span-6 space-y-4">
-            <!-- Create Post -->
             <div class="bg-white rounded-lg shadow p-4">
                 <div class="flex items-center space-x-3">
                     <img src="https://randomuser.me/api/portraits/men/32.jpg" id="createPostProfilePic" alt="Profile"
                         class="w-10 h-10 rounded-full object-cover">
                     <button onclick="openPostModal()" id="whatsOnYourMindBtn"
                         class="flex-1 bg-gray-100 hover:bg-gray-200 rounded-full py-2 px-4 text-left text-gray-500 transition">
-                        What's on your mind, John?
+                        What's on your mind?
                     </button>
                 </div>
-                <div class="border-t border-gray-200 mt-3 pt-3 flex justify-between">
+                <div class="border-t border-gray-200 mt-3 pt-3 flex flex-wrap gap-2 sm:justify-between justify-center">
                     <button onclick="openPostModal('live')"
-                        class="flex items-center justify-center space-x-2 text-gray-500 hover:bg-gray-100 rounded-lg flex-1 py-2">
+                        class="flex items-center justify-center space-x-2 text-gray-500 hover:bg-gray-100 rounded-lg flex-1 min-w-[130px] py-2">
                         <i class="fas fa-video text-red-500"></i>
-                        <span>Live Video</span>
+                        <span class="text-sm">Live Video</span>
                     </button>
+
                     <button onclick="openPostModal('photo')"
-                        class="flex items-center justify-center space-x-2 text-gray-500 hover:bg-gray-100 rounded-lg flex-1 py-2">
+                        class="flex items-center justify-center space-x-2 text-gray-500 hover:bg-gray-100 rounded-lg flex-1 min-w-[130px] py-2">
                         <i class="fas fa-images text-green-500"></i>
-                        <span>Photo/Video</span>
+                        <span class="text-sm">Photo/Video</span>
                     </button>
+
                     <button onclick="openPostModal('feeling')"
-                        class="flex items-center justify-center space-x-2 text-gray-500 hover:bg-gray-100 rounded-lg flex-1 py-2">
+                        class="flex items-center justify-center space-x-2 text-gray-500 hover:bg-gray-100 rounded-lg flex-1 min-w-[130px] py-2">
                         <i class="fas fa-smile text-yellow-500"></i>
-                        <span>Feeling/Activity</span>
+                        <span class="text-sm">Feeling/Activity</span>
                     </button>
                 </div>
             </div>
-
-            <!-- Posts -->
-
-            <div class="space-y-6" id="allPosts">
-
-            </div>
-
-
-
+            <div class="space-y-6" id="allPosts"></div>
         </div>
 
-        <!-- Right Sidebar - Contacts -->
         <div class="hidden md:block md:col-span-3">
             <div class="bg-white rounded-lg shadow p-4 sticky top-20">
                 <div class="flex items-center justify-between mb-4">
@@ -157,18 +117,13 @@
                     </div>
                 </div>
                 <div id="sidebarContacts" class="space-y-3">
-
-
-
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Create Post Modal -->
     <div id="postModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
         <div class="bg-white rounded-lg w-full max-w-2xl mx-4">
-            <!-- Modal Header -->
             <div class="border-b border-gray-200 p-4 flex items-center justify-between">
                 <h3 class="text-xl font-semibold" id="modalTitle">Create Post</h3>
                 <button onclick="closePostModal()" class="text-gray-500 hover:bg-gray-100 p-2 rounded-full">
@@ -176,9 +131,7 @@
                 </button>
             </div>
 
-            <!-- Modal Content -->
             <div class="p-4">
-
                 <div id="loader"
                     class="hidden absolute inset-0 bg-white dark:bg-gray-900 bg-opacity-85 flex flex-col items-center justify-center z-50 space-y-3">
                     <div class="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin">
@@ -194,7 +147,7 @@
                         <div class="flex items-center space-x-1 bg-gray-100 rounded-md px-2 py-1">
                             <i class="fas fa-globe-americas text-xs"></i>
                             <span class="text-xs">Public</span>
-                            <!-- <i class="fas fa-caret-down text-xs"></i> -->
+                            <i class="fas fa-caret-down text-xs"></i>
                         </div>
                     </div>
                 </div>
@@ -213,7 +166,6 @@
                     </div>
                 </div>
 
-
                 <div
                     class="border border-gray-300 rounded-xl p-4 mt-4 flex items-center justify-between bg-white shadow-sm hover:shadow-md transition-all duration-300">
                     <div class="flex items-center space-x-3">
@@ -231,7 +183,6 @@
 
             </div>
 
-            <!-- Modal Footer -->
             <div class="border-t border-gray-200 p-4">
                 <button id="postBtn"
                     class="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md">
@@ -241,10 +192,10 @@
         </div>
     </div>
 
-    <!-- Comments Modal -->
     <div id="commentsModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+
+
         <div class="bg-white rounded-lg w-full max-w-2xl mx-4 max-h-[90vh] flex flex-col">
-            <!-- Modal Header -->
             <div class="border-b border-gray-200 p-4 flex items-center justify-between">
                 <h3 class="text-xl font-semibold">Comments</h3>
                 <button onclick="closeCommentsModal()" class="text-gray-500 hover:bg-gray-100 p-2 rounded-full">
@@ -252,39 +203,40 @@
                 </button>
             </div>
 
-            <!-- Modal Content -->
             <div class="overflow-y-auto flex-1 p-4">
 
-                <!-- Comments -->
-                <div id="commentsContainer" class="space-y-4">
-                    <!-- Comment 1 -->
-                    
-
-                    <!-- Comment 2 -->
-                    <!-- <div class="flex space-x-3">
-                        <img src="https://randomuser.me/api/portraits/men/22.jpg" alt="Profile"
-                            class="w-8 h-8 rounded-full object-cover">
-                        <div class="flex-1">
-                            <div class="bg-gray-100 rounded-lg p-3">
-                                <h4 class="font-medium">Michael Chen</h4>
-                                <p class="mt-1">I'd recommend "Eloquent JavaScript" for beginners. It's free online too!
-                                </p>
-                            </div>
-                            <div class="flex items-center space-x-4 mt-1 ml-3 text-sm text-gray-500">
-                                <span>3m ago</span>
-                                <button class="hover:text-gray-700">Like</button>
-                                <button class="hover:text-gray-700">Reply</button>
-                            </div>
+                <div id="modalLoader"
+                    class="hidden absolute inset-0 bg-white/70 backdrop-blur-sm z-50 flex flex-col items-center justify-center space-y-6 rounded-lg">
+                    <div class="relative w-20 h-20">
+                        <div
+                            class="absolute inset-0 rounded-full border-4 border-t-transparent border-blue-500 animate-spin shadow-md">
                         </div>
-                    </div> -->
+                        <div
+                            class="absolute inset-2 rounded-full bg-gradient-to-br from-blue-100 to-white animate-pulse">
+                        </div>
+                    </div>
+                    <p class="text-lg font-semibold text-blue-600 tracking-wide">
+                        Loading...
+                    </p>
                 </div>
+                <div id="mainLoader"
+                    class="hidden absolute inset-0 bg-white dark:bg-gray-900 bg-opacity-85 flex flex-col items-center justify-center z-50 space-y-3">
+                    <div class="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin">
+                    </div>
+                    <p class="text-lg font-semibold text-gray-700 dark:text-gray-200">Loading...</p>
+                </div>
+
+
+                <div id="noCommentsSection" class="text-center">
+                    <h1 class="text-2xl text-gray-600 font-semibold">No Comments Yet</h1>
+                    <h2 class="text-gray-500">Be the first to comment.</h2>
+                </div>
+                <div id="commentsContainer" class="space-y-4"></div>
             </div>
 
-            <!-- Add Comment -->
             <div class="border-t border-gray-200 p-4">
                 <div class="flex items-center space-x-3">
-                    <img id="commentModalUserPic" src="" alt="Profile"
-                        class="w-8 h-8 rounded-full object-cover">
+                    <img id="commentModalUserPic" src="" alt="Profile" class="w-8 h-8 rounded-full object-cover">
                     <div class="flex-1 bg-gray-100 rounded-full px-4 py-2">
                         <input type="text" placeholder="Write a comment..." id="commentInput"
                             class="bg-transparent border-none outline-none w-full">
@@ -297,6 +249,7 @@
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script type="module" src="src/home.js"></script>
 </body>
 

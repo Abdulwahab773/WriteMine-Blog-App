@@ -1,10 +1,9 @@
-import { auth, createUserWithEmailAndPassword, updateProfile, signInWithPopup, provider , addDoc , collection, Timestamp, db } from "./firebase.js";
+import { auth, createUserWithEmailAndPassword, updateProfile, signInWithPopup, provider , addDoc , collection, Timestamp, db, onAuthStateChanged } from "./firebase.js";
 import { showLoader, hideLoader } from "./helpers.js";
 
 let loader = document.getElementById("loader");
 let signUpForm = document.getElementById("signUpForm");
 let googleBtn = document.getElementById("googleBtn");
-
 
 const fileUpload = async () => {
     showLoader();
@@ -21,17 +20,12 @@ const fileUpload = async () => {
             body: formData
         });
         let data = await res.json();
-        hideLoader();
         return data.secure_url;
 
     } catch (error) {
-        console.log("❌ Cloudinary upload error:", error);
         hideLoader();
-        throw error;
     }
 };
-
-
 
 const signUp = async () => {
     showLoader();
@@ -84,16 +78,11 @@ googleBtn.addEventListener('click', async () => {
 
 })
 
-
-
-
-
 signUpForm.addEventListener('submit', (e) => {
     e.preventDefault()
     showLoader();
     signUp();
     signUpForm.reset();
 })
-
 
 window.fileUpload = fileUpload;
