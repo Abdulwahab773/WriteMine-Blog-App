@@ -41,17 +41,7 @@ WriteMine is a full-featured blogging web application built with modern JavaScri
 ### 🛠️ Installation & Usage:
 
 - Clone the repo: git clone https://github.com/your-username/firebase-comments-system.git
-- Add your Firebase project config in a file like firebase-config.js:
-
-const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_BUCKET",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
-};
-
+- Add your Firebase project config in a file like firebase-config.js
 - Run using any live server (VSCode Live Server, local dev server, etc.)
 
 ### 📄 License:
