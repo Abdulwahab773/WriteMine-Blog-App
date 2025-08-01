@@ -56,9 +56,7 @@ function closePostModal() {
 }
 
 // Comments modal functions
-function openCommentsModal() {
-  document.getElementById('commentsModal').classList.remove('hidden');
-}
+
 
 function closeCommentsModal() {
   document.getElementById('commentsModal').classList.add('hidden');
@@ -95,7 +93,6 @@ window.onclick = function (event) {
   }
 }
 
-window.openCommentsModal = openCommentsModal;
 window.closeCommentsModal = closeCommentsModal;
 window.openPostModal = openPostModal;
 window.closePostModal = closePostModal;
@@ -117,6 +114,7 @@ let navBarProfilePic = document.getElementById('navBarProfilePic');
 let leftSideBarProfilePic = document.getElementById('leftSideBarProfilePic');
 let createPostProfilePic = document.getElementById("createPostProfilePic");
 let modalProfilePic = document.getElementById("modalProfilePic");
+let commentModalUserPic = document.getElementById("commentModalUserPic");
 let currentUserUID = null;
 let currentUserName = null;
 let currentUserPic = null;
@@ -140,6 +138,7 @@ onAuthStateChanged(auth, (user) => {
     leftSideBarProfilePic.src = user.photoURL;
     createPostProfilePic.src = user.photoURL;
     modalProfilePic.src = user.photoURL;
+    commentModalUserPic.src = user.photoURL;
   }
 });
 
@@ -288,7 +287,7 @@ let getPosts = async () => {
         <span>${data.likes}</span>
       </div>
       <div>
-        <span>8 comments · 3 shares</span>
+        <span>8 comments</span>
       </div>
     </div>
 
@@ -299,7 +298,7 @@ let getPosts = async () => {
         <i class="fas fa-thumbs-up"></i>
         <span>Like</span>
       </button>
-      <button onclick="openCommentsModal(); handelComments('${data.docId}')"
+      <button onclick="openCommentsModal('${data.docId}'); handelComments('${data.docId}')"
         class="flex items-center justify-center space-x-2 text-gray-500 hover:bg-gray-100 rounded-lg py-2">
         <i class="fas fa-comment"></i>
         <span>Comment</span>
@@ -320,10 +319,13 @@ let getPosts = async () => {
 
 let addCommentBtn = document.getElementById("addCommentBtn");
 let commentInput = document.getElementById("commentInput");
+let commentsContainer = document.getElementById("commentsContainer");
+
+
 
 const handelComments = async (id) => {
   const dbref = doc(db, "posts", id);
-  
+
   const addComment = async () => {
     await updateDoc(dbref, {
       comments: arrayUnion({
@@ -334,17 +336,56 @@ const handelComments = async (id) => {
         userPic: currentUserPic
       })
     });
-    console.log("Comment Added bhai");
-  } 
-
-  addCommentBtn.addEventListener('click', addComment)
+  }
   
+  addCommentBtn.addEventListener('click', () => {
+    addComment();
+    commentInput.value = "";
+  })
+
 }
 
 
 
 window.handelComments = handelComments;
 
+
+const openCommentsModal = async (id) => {
+
+  document.getElementById('commentsModal').classList.remove('hidden');
+
+  let collectionRef = collection(db, "posts");
+  let dbRef = query(collectionRef, where("docId", "==", id))
+  await onSnapshot(dbRef, (snapshot) => {
+    commentsContainer.innerHTML = "";
+    snapshot.forEach((docs) => {
+      let data = docs.data();
+      let allComments = data.comments;
+      allComments.map((comment) => {
+        commentsContainer.innerHTML += `  <div class="flex space-x-3" >
+    <img src="${comment.userPic}" alt="Profile"
+      class="w-8 h-8 rounded-full object-cover">
+      <div class="flex-1">
+        <div class="bg-gray-100 rounded-lg p-3">
+          <h4 class="font-medium">${comment.userName}</h4>
+          <p class="mt-1">${comment.text}
+          </p>
+        </div>
+        <div class="flex items-center space-x-4 mt-1 ml-3 text-sm text-gray-500">
+          <span>3m ago</span>
+          <button class="hover:text-gray-700">Like</button>
+          <button class="hover:text-gray-700">Reply</button>
+        </div>
+      </div>
+    </div>`
+      })
+
+    })
+  })
+}
+
+
+window.openCommentsModal = openCommentsModal
 
 
 
@@ -364,7 +405,7 @@ const handleLikes = async (id) => {
 
 function triggerCelebration() {
   const container = document.getElementById('celebration-container');
-  const emojis = ["🎉", "✨", "💖", "💥", "🔥", "💫"];
+  const emojis = ["🎉", "✨", "💖", "💥", "🔥"];
 
   for (let i = 0; i < 20; i++) {
     const emoji = document.createElement('div');

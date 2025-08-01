@@ -256,27 +256,12 @@
             <div class="overflow-y-auto flex-1 p-4">
 
                 <!-- Comments -->
-                <div class="space-y-4">
+                <div id="commentsContainer" class="space-y-4">
                     <!-- Comment 1 -->
-                    <div class="flex space-x-3">
-                        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Profile"
-                            class="w-8 h-8 rounded-full object-cover">
-                        <div class="flex-1">
-                            <div class="bg-gray-100 rounded-lg p-3">
-                                <h4 class="font-medium">John Doe</h4>
-                                <p class="mt-1">Which book was it? I'm looking for good resources to learn web
-                                    development.</p>
-                            </div>
-                            <div class="flex items-center space-x-4 mt-1 ml-3 text-sm text-gray-500">
-                                <span>5m ago</span>
-                                <button class="hover:text-gray-700">Like</button>
-                                <button class="hover:text-gray-700">Reply</button>
-                            </div>
-                        </div>
-                    </div>
+                    
 
                     <!-- Comment 2 -->
-                    <div class="flex space-x-3">
+                    <!-- <div class="flex space-x-3">
                         <img src="https://randomuser.me/api/portraits/men/22.jpg" alt="Profile"
                             class="w-8 h-8 rounded-full object-cover">
                         <div class="flex-1">
@@ -291,14 +276,14 @@
                                 <button class="hover:text-gray-700">Reply</button>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
             </div>
 
             <!-- Add Comment -->
             <div class="border-t border-gray-200 p-4">
                 <div class="flex items-center space-x-3">
-                    <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Profile"
+                    <img id="commentModalUserPic" src="" alt="Profile"
                         class="w-8 h-8 rounded-full object-cover">
                     <div class="flex-1 bg-gray-100 rounded-full px-4 py-2">
                         <input type="text" placeholder="Write a comment..." id="commentInput"
